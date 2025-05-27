@@ -76,6 +76,10 @@ public class PrescriptionService {
             prescriptionMedicine.setMedicine(medicineOpt.get());
             prescriptionMedicine.setDurationDays(medicineDto.getDurationDays());
             prescriptionMedicine.setSpecialInstructions(medicineDto.getSpecialInstructions());
+            prescriptionMedicine.setCreatedAt(prescription.getCreatedAt());
+            prescriptionMedicine.setUpdatedAt(prescription.getUpdatedAt());
+
+
 
             prescriptionMedicine = prescriptionMedicineRepository.save(prescriptionMedicine);
 
@@ -89,7 +93,8 @@ public class PrescriptionService {
                 timing.setAmount(timingDto.getAmount());
                 timing.setSpecificTime(timingDto.getSpecificTime());
                 timing.setIntervalHours(timingDto.getIntervalHours());
-
+                timing.setCreatedAt(prescription.getCreatedAt());
+                timing.setUpdatedAt(prescription.getUpdatedAt());
                 timings.add(timing);
             }
 
