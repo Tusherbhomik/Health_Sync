@@ -39,23 +39,24 @@ public class MedicineService {
             results.add(dto);
         }
 
-        // Also search for generic medicines if not many results found
-        if (results.size() < 10) {
-            List<MedicineGeneric> generics = medicineGenericRepository.findByGenericNameContainingIgnoreCase(trimmedSearchTerm);
-
-            for (MedicineGeneric generic : generics) {
-                // Add all medicines for this generic
-                List<Medicine> genericMedicines = medicineRepository.findByMedicineGenericId(generic.getId());
-                for (Medicine medicine : genericMedicines) {
-                    MedicineSearchDto dto = convertToSearchDto(medicine);
-                    // Avoid duplicates
-                    if (!results.stream().anyMatch(r -> r.getId().equals(dto.getId()))) {
-                        results.add(dto);
-                    }
-                }
-            }
-        }
-
+//        // Also search for generic medicines if not many results found
+//        if (results.size() < 10) {
+//            List<MedicineGeneric> generics = medicineGenericRepository.findByGenericNameContainingIgnoreCase(trimmedSearchTerm);
+//
+//            for (MedicineGeneric generic : generics) {
+//                // Add all medicines for this generic
+//                List<Medicine> genericMedicines = medicineRepository.findByMedicineGenericId(generic.getId());
+//                for (Medicine medicine : genericMedicines) {
+//                    MedicineSearchDto dto = convertToSearchDto(medicine);
+//                    // Avoid duplicates
+//                    if (!results.stream().anyMatch(r -> r.getId().equals(dto.getId()))) {
+//                        results.add(dto);
+//                    }
+//                }
+//            }
+//        }
+//        System.out.println(results);
+//
         return results;
     }
 

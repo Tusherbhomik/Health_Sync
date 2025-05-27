@@ -23,7 +23,7 @@ public class PrescriptionController {
     private PrescriptionService prescriptionService;
 
     @PostMapping
-    @PreAuthorize("hasRole('DOCTOR')")
+   @PreAuthorize("hasRole('DOCTOR')")
     public ResponseEntity<?> createPrescription(@Valid @RequestBody PrescriptionCreateDto createDto,
                                                 HttpServletRequest request) {
         try {

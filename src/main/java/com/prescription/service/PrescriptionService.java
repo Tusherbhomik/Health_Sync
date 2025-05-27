@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -55,9 +56,11 @@ public class PrescriptionService {
         prescription.setDoctor(doctor);
         prescription.setPatient(patient);
         prescription.setFollowUpDate(createDto.getFollowUpDate());
-        prescription.setAdvice(createDto.getAdvice());
+        prescription.setCreatedAt(LocalDateTime.now());
+        prescription.setUpdatedAt(LocalDateTime.now());
 
         prescription = prescriptionRepository.save(prescription);
+
 
         // Create prescription medicines
         List<PrescriptionMedicine> prescriptionMedicines = new ArrayList<>();
