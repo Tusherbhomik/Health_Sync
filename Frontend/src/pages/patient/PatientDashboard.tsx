@@ -1,0 +1,499 @@
+import MainLayout from "@/components/layout/MainLayout";
+import { useToast } from "@/components/ui/use-toast";
+import { API_BASE_URL } from "@/url";
+import { Calendar, ChevronRight, Pill } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+// --- INTERFACES ---
+interface PatientData {
+  id: number;
+  name: string;
+  email: string;
+  phone: string;
+  birthDate: string;
+  gender: string;
+  profileImage?: string;
+  heightCm?: number;
+  weightKg?: number;
+  bloodType?: string;
+}
+
+interface Appointment {
+  id: number;
+  doctor: {
+    id: number;
+    name: string;
+    specialization: string;
+  };
+  scheduledTime: string;
+  type: string;
+  status: string;
+  reason?: string;
+}
+
+interface Prescription {
+  id: number;
+  diagnosis: string;
+  issueDate: string;
+  followUpDate: string;
+  medicines: Array<{
+    medicine: string;
+    dosage: string;
+    timing: string;
+    instructions: string;
+  }>;
+}
+
+// --- DUMMY DATA GENERATORS ---
+
+const getDynamicDate = (daysOffset = 0, time = "10:00:00") => {
+  const date = new Date();
+  date.setDate(date.getDate() + daysOffset);
+  return `${date.toISOString().split("T")[0]}T${time}`;
+};
+
+const DUMMY_PROFILE: PatientData = {
+  id: 1,
+  name: "Sarah Jenkins",
+  email: "sarah.j@example.com",
+  phone: "+1 (555) 123-4567",
+  birthDate: "1992-05-15",
+  gender: "Female",
+  heightCm: 165,
+  weightKg: 62,
+  bloodType: "O_POSITIVE",
+};
+
+const DUMMY_APPOINTMENTS: Appointment[] = [
+  {
+    id: 101,
+    doctor: {
+      id: 5,
+      name: "Dr. Emily Chen",
+      specialization: "Dermatologist",
+    },
+    scheduledTime: getDynamicDate(0, "14:30:00"), // Today
+    type: "IN_PERSON",
+    status: "CONFIRMED",
+    reason: "Annual skin checkup",
+  },
+  {
+    id: 102,
+    doctor: {
+      id: 8,
+      name: "Dr. Michael Ross",
+      specialization: "General Physician",
+    },
+    scheduledTime: getDynamicDate(1, "09:00:00"), // Tomorrow
+    type: "VIDEO",
+    status: "SCHEDULED",
+    reason: "Follow up on flu symptoms",
+  },
+  {
+    id: 103,
+    doctor: {
+      id: 3,
+      name: "Dr. Sarah Connor",
+      specialization: "Cardiologist",
+    },
+    scheduledTime: getDynamicDate(5, "11:00:00"), // In 5 days
+    type: "IN_PERSON",
+    status: "CONFIRMED",
+    reason: "Routine heart screening",
+  },
+];
+
+const DUMMY_PRESCRIPTIONS: Prescription[] = [
+  {
+    id: 201,
+    diagnosis: "Seasonal Allergies",
+    issueDate: getDynamicDate(-2), // 2 days ago
+    followUpDate: getDynamicDate(12),
+    medicines: [
+      {
+        medicine: "Cetirizine",
+        dosage: "10mg",
+        timing: "Night",
+        instructions: "Take with water",
+      },
+    ],
+  },
+  {
+    id: 202,
+    diagnosis: "Upper Respiratory Infection",
+    issueDate: getDynamicDate(-10),
+    followUpDate: getDynamicDate(0), // Today
+    medicines: [
+      {
+        medicine: "Amoxicillin",
+        dosage: "500mg",
+        timing: "Morning, Night",
+        instructions: "Complete full course",
+      },
+    ],
+  },
+  {
+    id: 203,
+    diagnosis: "Vitamin D Deficiency",
+    issueDate: getDynamicDate(-30),
+    followUpDate: getDynamicDate(-2),
+    medicines: [
+      {
+        medicine: "Cholecalciferol",
+        dosage: "60000 IU",
+        timing: "Weekly",
+        instructions: "Take after heavy meal",
+      },
+    ],
+  },
+];
+
+const PatientDashboard = () => {
+  const { toast } = useToast();
+  const navigate = useNavigate();
+  const [patientData, setPatientData] = useState<PatientData | null>(null);
+  const [upcomingAppointments, setUpcomingAppointments] = useState<
+    Appointment[]
+  >([]);
+  const [recentPrescriptions, setRecentPrescriptions] = useState<
+    Prescription[]
+  >([]);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const calculateAge = (birthDate: string): number => {
+    if (!birthDate) return 0;
+    const today = new Date();
+    const birth = new Date(birthDate);
+    let age = today.getFullYear() - birth.getFullYear();
+    const monthDiff = today.getMonth() - birth.getMonth();
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birth.getDate())
+    ) {
+      age--;
+    }
+    return age;
+  };
+
+  const formatDateTime = (dateTimeString: string) => {
+    const date = new Date(dateTimeString);
+    return {
+      date: date.toLocaleDateString(),
+      time: date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
+    };
+  };
+
+  const getAppointmentStatus = (scheduledTime: string) => {
+    const appointmentDate = new Date(scheduledTime);
+    const now = new Date();
+    // Reset time portion for accurate day comparison
+    const appDateOnly = new Date(appointmentDate.toDateString());
+    const nowDateOnly = new Date(now.toDateString());
+    
+    const diffTime = appDateOnly.getTime() - nowDateOnly.getTime();
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+    if (diffDays === 0) return "Today";
+    if (diffDays === 1) return "Tomorrow";
+    if (diffDays > 1) return `In ${diffDays} days`;
+    return "Past";
+  };
+
+  const getPrescriptionStatus = (followUpDate: string) => {
+    const today = new Date();
+    const followUp = new Date(followUpDate);
+    return followUp >= today ? "Active" : "Completed";
+  };
+
+  // Separated fetch logic into distinct functions for better error handling/fallback
+  const fetchProfile = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/patients/profile`, {
+        method: "GET",
+        credentials: "include",
+      });
+      if (!response.ok) throw new Error("Failed");
+      const data = await response.json();
+      
+      if (data && data.name) {
+        setPatientData(data);
+      } else {
+        setPatientData(DUMMY_PROFILE);
+      }
+    } catch (e) {
+      console.warn("Using Dummy Profile Data");
+      setPatientData(DUMMY_PROFILE);
+    }
+  };
+
+  const fetchAppointments = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/appointments/patient`, {
+        method: "GET",
+        credentials: "include",
+      });
+      if (!response.ok) throw new Error("Failed");
+      const data = await response.json();
+
+      if (Array.isArray(data) && data.length > 0) {
+        const upcoming = data
+          .filter(
+            (apt: Appointment) =>
+              (apt.status === "SCHEDULED" || apt.status === "CONFIRMED") &&
+              new Date(apt.scheduledTime) > new Date()
+          )
+          .sort(
+            (a: Appointment, b: Appointment) =>
+              new Date(a.scheduledTime).getTime() -
+              new Date(b.scheduledTime).getTime()
+          )
+          .slice(0, 3);
+        
+        // If we have API data but filtering resulted in 0 items (rare but possible), 
+        // we might still want to show dummy data for demo purposes if strictly needed,
+        // but usually, if API works, we show real empty state. 
+        // For your specific request to "fill the page", we fallback if empty.
+        if (upcoming.length > 0) {
+          setUpcomingAppointments(upcoming);
+        } else {
+          setUpcomingAppointments(DUMMY_APPOINTMENTS);
+        }
+      } else {
+        setUpcomingAppointments(DUMMY_APPOINTMENTS);
+      }
+    } catch (e) {
+      console.warn("Using Dummy Appointment Data");
+      setUpcomingAppointments(DUMMY_APPOINTMENTS);
+    }
+  };
+
+  const fetchPrescriptions = async () => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/prescriptions/patient`, {
+        method: "GET",
+        credentials: "include",
+      });
+      if (!response.ok) throw new Error("Failed");
+      const data = await response.json();
+
+      if (Array.isArray(data) && data.length > 0) {
+        const recent = data
+          .sort(
+            (a: Prescription, b: Prescription) =>
+              new Date(b.issueDate).getTime() -
+              new Date(a.issueDate).getTime()
+          )
+          .slice(0, 3);
+        setRecentPrescriptions(recent);
+      } else {
+        setRecentPrescriptions(DUMMY_PRESCRIPTIONS);
+      }
+    } catch (e) {
+      console.warn("Using Dummy Prescription Data");
+      setRecentPrescriptions(DUMMY_PRESCRIPTIONS);
+    }
+  };
+
+  useEffect(() => {
+    const loadDashboard = async () => {
+      setIsLoading(true);
+      // Run all fetches in parallel, they won't block each other's catch blocks
+      await Promise.all([
+        fetchProfile(),
+        fetchAppointments(),
+        fetchPrescriptions()
+      ]);
+      setIsLoading(false);
+    };
+
+    loadDashboard();
+  }, []);
+
+  const handleBookAppointment = () => {
+    navigate("/patient/book-appointment");
+  };
+
+  const handleViewPrescriptions = () => {
+    navigate("/patient/prescriptions");
+  };
+
+  if (isLoading) {
+    return (
+      <MainLayout userType="patient">
+        <div className="flex items-center justify-center min-h-64">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary dark:border-blue-500 mx-auto mb-4"></div>
+            <p className="text-gray-600 dark:text-gray-400">Loading dashboard...</p>
+          </div>
+        </div>
+      </MainLayout>
+    );
+  }
+
+  return (
+    <MainLayout userType="patient">
+      <div className="space-y-8">
+        {/* Header */}
+        <div>
+          <h1 className="page-title dark:text-gray-100">Patient Dashboard</h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            Welcome back, {patientData?.name || "Patient"}
+            {patientData?.birthDate &&
+              ` (Age: ${calculateAge(patientData.birthDate)})`}
+          </p>
+        </div>
+
+        {/* Upcoming Appointments */}
+        <div className="card">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold dark:text-gray-100">Upcoming Appointments</h2>
+          </div>
+          <div className="space-y-4">
+            {upcomingAppointments.length > 0 ? (
+              upcomingAppointments.map((appointment) => {
+                const dateTime = formatDateTime(appointment.scheduledTime);
+                return (
+                  <div
+                    key={appointment.id}
+                    className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="p-3 rounded-full bg-primary/10">
+                        <Calendar className="w-6 h-6 text-primary" />
+                      </div>
+                      <div>
+                        <h3 className="font-medium dark:text-gray-100">
+                          {appointment.doctor.name}
+                        </h3>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          {appointment.doctor.specialization}
+                        </p>
+                        {appointment.reason && (
+                          <p className="text-xs text-gray-500 dark:text-gray-500 mt-1">
+                            Reason: {appointment.reason}
+                          </p>
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="flex items-center gap-2 justify-end mb-1">
+                        <span className="text-xs text-primary dark:text-blue-400 font-medium">
+                          {getAppointmentStatus(appointment.scheduledTime)}
+                        </span>
+                        <span className="text-gray-300 dark:text-gray-600">•</span>
+                        <p className="font-medium dark:text-gray-200">{dateTime.date}</p>
+                      </div>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">{dateTime.time}</p>
+                    </div>
+                    <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-full">
+                      <ChevronRight className="w-5 h-5 text-gray-400 dark:text-gray-500" />
+                    </button>
+                  </div>
+                );
+              })
+            ) : (
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                <Calendar className="w-12 h-12 mx-auto mb-4 text-gray-300 dark:text-gray-600" />
+                <p>No upcoming appointments</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Recent Prescriptions */}
+        <div className="card">
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-xl font-bold dark:text-gray-100">Recent Prescriptions</h2>
+          </div>
+          <div className="space-y-4">
+            {recentPrescriptions.length > 0 ? (
+              recentPrescriptions.map((prescription) => (
+                <div
+                  key={prescription.id}
+                  className="flex items-center justify-between p-4 bg-gray-50 dark:bg-gray-700 rounded-lg"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="p-3 rounded-full bg-orange-500/10 dark:bg-orange-500/20">
+                      <Pill className="w-6 h-6 text-orange-500 dark:text-orange-400" />
+                    </div>
+                    <div>
+                      <h3 className="font-medium dark:text-gray-100">{prescription.diagnosis}</h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {prescription.medicines.length} medicine(s) prescribed
+                      </p>
+                      <p className="text-xs text-gray-500 dark:text-gray-500">
+                        Issued:{" "}
+                        {new Date(prescription.issueDate).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                  <div className="text-right">
+                    <p className="font-medium dark:text-gray-200">
+                      {new Date(prescription.followUpDate).toLocaleDateString()}
+                    </p>
+                    <span className={
+                      `inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+                        getPrescriptionStatus(prescription.followUpDate) === 'Active' 
+                        ? 'bg-green-100 dark:bg-green-900 text-green-800 dark:text-green-200'
+                        : 'bg-gray-100 dark:bg-gray-600 text-gray-800 dark:text-gray-300'
+                      }`
+                    }>
+                      {getPrescriptionStatus(prescription.followUpDate)}
+                    </span>
+                  </div>
+                  <button className="p-2 hover:bg-gray-100 dark:hover:bg-gray-600 rounded-full">
+                    <ChevronRight className="w-5 h-5 text-gray-400 dark:text-gray-500" />
+                  </button>
+                </div>
+              ))
+            ) : (
+              <div className="text-center py-8 text-gray-500 dark:text-gray-400">
+                <Pill className="w-12 h-12 mx-auto mb-4 text-gray-300 dark:text-gray-600" />
+                <p>No recent prescriptions</p>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Quick Actions */}
+        <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
+          <div
+            className="card hover:shadow-md transition-shadow cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700"
+            onClick={handleBookAppointment}
+          >
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-full bg-primary/10 dark:bg-blue-900/30">
+                <Calendar className="w-6 h-6 text-primary dark:text-blue-400" />
+              </div>
+              <div>
+                <h3 className="font-medium dark:text-gray-100">Book Appointment</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  Schedule a new doctor visit
+                </p>
+              </div>
+            </div>
+          </div>
+          <div
+            className="card hover:shadow-md transition-shadow cursor-pointer hover:bg-gray-50 dark:hover:bg-gray-700"
+            onClick={handleViewPrescriptions}
+          >
+            <div className="flex items-center gap-4">
+              <div className="p-3 rounded-full bg-orange-500/10 dark:bg-orange-500/20">
+                <Pill className="w-6 h-6 text-orange-500 dark:text-orange-400" />
+              </div>
+              <div>
+                <h3 className="font-medium dark:text-gray-100">Prescriptions</h3>
+                <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">
+                  View all your medications
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </MainLayout>
+  );
+};
+
+export default PatientDashboard;
