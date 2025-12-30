@@ -8,49 +8,69 @@
 ![Neon](https://img.shields.io/badge/PostgreSQL-NeonDB-orange)
 ![Firebase](https://img.shields.io/badge/Firebase-Storage-yellow)
 
-## 📸 App Walkthrough
+## 📸 App Walkthrough (Scroll Right ➡️)
 
 <table>
   <tr>
-    <td align="center">
-      <img src="Image/starter_page.png" width="250" alt="Landing Page" />
-      <br />
+    <td align="center" style="min-width: 200px;">
+      <a href="Image/starter_page.png">
+        <img src="Image/starter_page.png" height="400" alt="Landing Page" />
+      </a><br />
       <sub><b>Landing Page</b></sub>
     </td>
-    <td align="center">
-      <img src="Image/login.png" width="250" alt="Login" />
-      <br />
+    <td align="center" style="min-width: 200px;">
+      <a href="Image/login.png">
+        <img src="Image/login.png" height="400" alt="Login Screen" />
+      </a><br />
       <sub><b>Secure Login</b></sub>
     </td>
-    <td align="center">
-      <img src="Image/signup.png" width="250" alt="Signup" />
-      <br />
+    <td align="center" style="min-width: 200px;">
+      <a href="Image/signup.png">
+        <img src="Image/signup.png" height="400" alt="Signup" />
+      </a><br />
       <sub><b>Registration</b></sub>
     </td>
-    <td align="center">
-      <img src="Image/doctor_dashboard.png" width="250" alt="Doctor Dashboard" />
-      <br />
+    <td align="center" style="min-width: 200px;">
+      <a href="Image/doctor_dashboard.png">
+        <img src="Image/doctor_dashboard.png" height="400" alt="Doctor Dashboard" />
+      </a><br />
       <sub><b>Doctor Dashboard</b></sub>
     </td>
-    <td align="center">
-      <img src="Image/patient_dashboard.png" width="250" alt="Patient Dashboard" />
-      <br />
+    <td align="center" style="min-width: 200px;">
+      <a href="Image/update_schedule_of_doctor.png">
+        <img src="Image/update_schedule_of_doctor.png" height="400" alt="Schedule" />
+      </a><br />
+      <sub><b>Schedule Management</b></sub>
+    </td>
+    <td align="center" style="min-width: 200px;">
+      <a href="Image/doctor_precription.png">
+        <img src="Image/doctor_precription.png" height="400" alt="Prescription" />
+      </a><br />
+      <sub><b>Write Prescription</b></sub>
+    </td>
+    <td align="center" style="min-width: 200px;">
+      <a href="Image/all_medicines-generics.png">
+        <img src="Image/all_medicines-generics.png" height="400" alt="Medicines" />
+      </a><br />
+      <sub><b>Medicine Database</b></sub>
+    </td>
+    <td align="center" style="min-width: 200px;">
+      <a href="Image/patient_dashboard.png">
+        <img src="Image/patient_dashboard.png" height="400" alt="Patient Dashboard" />
+      </a><br />
       <sub><b>Patient Dashboard</b></sub>
     </td>
-    <td align="center">
-      <img src="Image/patient_book_appointment.png" width="250" alt="Booking" />
-      <br />
-      <sub><b>Appointment Booking</b></sub>
+    <td align="center" style="min-width: 200px;">
+      <a href="Image/patient_book_appointment.png">
+        <img src="Image/patient_book_appointment.png" height="400" alt="Booking" />
+      </a><br />
+      <sub><b>Book Appointment</b></sub>
     </td>
-    <td align="center">
-      <img src="Image/doctor_precription.png" width="250" alt="Prescription" />
-      <br />
-      <sub><b>Prescription Modal</b></sub>
-    </td>
-    <td align="center">
-      <img src="Image/all_medicines-generics.png" width="250" alt="Medicines" />
-      <br />
-      <sub><b>Medicine Database</b></sub>
+    <td align="center" style="min-width: 200px;">
+      <a href="Image/Patient-all_prescriptions.png">
+        <img src="Image/Patient-all_prescriptions.png" height="400" alt="History" />
+      </a><br />
+      <sub><b>Medical History</b></sub>
     </td>
   </tr>
 </table>
@@ -78,17 +98,17 @@
 ## ✨ Key Features
 
 ### 👨‍⚕️ For Doctors
-* **Dashboard Analytics:** View total patients, appointment stats, and daily schedules (`doctor_dashboard.png`).
-* **Schedule Management:** Update availability and slots (`update_schedule_of_doctor.png`).
-* **Prescription System:** Create digital prescriptions with generic medicine database (`doctor_precription.png`).
+* **Dashboard Analytics:** View total patients, appointment stats, and daily schedules.
+* **Schedule Management:** Update availability and slots.
+* **Prescription System:** Create digital prescriptions with generic medicine database.
 * **Patient History:** Access recent patients and their medical records.
-* **Profile Management:** Manage professional details and qualifications (`doctorprofile.png`).
+* **Profile Management:** Manage professional details and qualifications.
 
 ### 👤 For Patients
-* **Personal Health Dashboard:** Track appointments and recent prescriptions (`patient_dashboard.png`).
-* **Appointment Booking:** Easy interface to find doctors by specialization (`patient_book_appointment.png`).
-* **Medical History:** View all past prescriptions (`Patient-all_prescriptions.png`).
-* **Profile:** Manage personal health metrics like height, weight, and blood type (`patient_profile.png`).
+* **Personal Health Dashboard:** Track appointments and recent prescriptions.
+* **Appointment Booking:** Easy interface to find doctors by specialization.
+* **Medical History:** View all past prescriptions.
+* **Profile:** Manage personal health metrics like height, weight, and blood type.
 
 ---
 
