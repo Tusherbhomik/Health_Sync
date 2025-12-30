@@ -10,67 +10,76 @@
 
 ## 📸 App Walkthrough (Scroll Right ➡️)
 
+### 1. Onboarding & Authentication
 <table>
   <tr>
-    <td align="center" style="min-width: 200px;">
-      <a href="Image/starter_page.png">
-        <img src="Image/starter_page.png" height="400" alt="Landing Page" />
-      </a><br />
-      <sub><b>Landing Page</b></sub>
+    <td align="center">
+      <img src="Image/starter_page.png" height="300" alt="Starter Page" />
+      <br /><sub><b>Landing Page</b></sub>
     </td>
-    <td align="center" style="min-width: 200px;">
-      <a href="Image/login.png">
-        <img src="Image/login.png" height="400" alt="Login Screen" />
-      </a><br />
-      <sub><b>Secure Login</b></sub>
+    <td align="center">
+      <img src="Image/login.png" height="300" alt="Login" />
+      <br /><sub><b>Login</b></sub>
     </td>
-    <td align="center" style="min-width: 200px;">
-      <a href="Image/signup.png">
-        <img src="Image/signup.png" height="400" alt="Signup" />
-      </a><br />
-      <sub><b>Registration</b></sub>
+    <td align="center">
+      <img src="Image/signup.png" height="300" alt="Signup" />
+      <br /><sub><b>Register</b></sub>
     </td>
-    <td align="center" style="min-width: 200px;">
-      <a href="Image/doctor_dashboard.png">
-        <img src="Image/doctor_dashboard.png" height="400" alt="Doctor Dashboard" />
-      </a><br />
-      <sub><b>Doctor Dashboard</b></sub>
+  </tr>
+</table>
+
+### 2. Doctor Portal
+<table>
+  <tr>
+    <td align="center">
+      <img src="Image/doctor_dashboard.png" height="300" alt="Dashboard" />
+      <br /><sub><b>Dashboard Analytics</b></sub>
     </td>
-    <td align="center" style="min-width: 200px;">
-      <a href="Image/update_schedule_of_doctor.png">
-        <img src="Image/update_schedule_of_doctor.png" height="400" alt="Schedule" />
-      </a><br />
-      <sub><b>Schedule Management</b></sub>
+    <td align="center">
+      <img src="Image/doctor_precription.png" height="300" alt="Prescription" />
+      <br /><sub><b>Write Prescription</b></sub>
     </td>
-    <td align="center" style="min-width: 200px;">
-      <a href="Image/doctor_precription.png">
-        <img src="Image/doctor_precription.png" height="400" alt="Prescription" />
-      </a><br />
-      <sub><b>Write Prescription</b></sub>
+    <td align="center">
+      <img src="Image/update_schedule_of_doctor.png" height="300" alt="Schedule" />
+      <br /><sub><b>Manage Schedule</b></sub>
     </td>
-    <td align="center" style="min-width: 200px;">
-      <a href="Image/all_medicines-generics.png">
-        <img src="Image/all_medicines-generics.png" height="400" alt="Medicines" />
-      </a><br />
-      <sub><b>Medicine Database</b></sub>
+    <td align="center">
+      <img src="Image/doctorprofile.png" height="300" alt="Profile" />
+      <br /><sub><b>Doctor Profile</b></sub>
     </td>
-    <td align="center" style="min-width: 200px;">
-      <a href="Image/patient_dashboard.png">
-        <img src="Image/patient_dashboard.png" height="400" alt="Patient Dashboard" />
-      </a><br />
-      <sub><b>Patient Dashboard</b></sub>
+    <td align="center">
+      <img src="Image/recent_prescriptions_of_doctor.png" height="300" alt="Recent" />
+      <br /><sub><b>Recent History</b></sub>
     </td>
-    <td align="center" style="min-width: 200px;">
-      <a href="Image/patient_book_appointment.png">
-        <img src="Image/patient_book_appointment.png" height="400" alt="Booking" />
-      </a><br />
-      <sub><b>Book Appointment</b></sub>
+     <td align="center">
+      <img src="Image/all_medicines-generics.png" height="300" alt="Medicines" />
+      <br /><sub><b>Medicine DB</b></sub>
     </td>
-    <td align="center" style="min-width: 200px;">
-      <a href="Image/Patient-all_prescriptions.png">
-        <img src="Image/Patient-all_prescriptions.png" height="400" alt="History" />
-      </a><br />
-      <sub><b>Medical History</b></sub>
+  </tr>
+</table>
+
+### 3. Patient Portal
+<table>
+  <tr>
+    <td align="center">
+      <img src="Image/patient_dashboard.png" height="300" alt="Dashboard" />
+      <br /><sub><b>Patient Dashboard</b></sub>
+    </td>
+    <td align="center">
+      <img src="Image/patient_book_appointment.png" height="300" alt="Booking" />
+      <br /><sub><b>Book Appointment</b></sub>
+    </td>
+    <td align="center">
+      <img src="Image/Patient-all_prescriptions.png" height="300" alt="Prescriptions" />
+      <br /><sub><b>My Prescriptions</b></sub>
+    </td>
+    <td align="center">
+      <img src="Image/patient_profile.png" height="300" alt="Profile" />
+      <br /><sub><b>Health Profile</b></sub>
+    </td>
+     <td align="center">
+      <img src="Image/medicine_details.png" height="300" alt="Details" />
+      <br /><sub><b>Med Details</b></sub>
     </td>
   </tr>
 </table>
